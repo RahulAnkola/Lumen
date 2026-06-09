@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" data-motion="on">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Lumen — Sign in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --accent:#E5484D; --bgh:264; --bgc:0.012;
+  --font-display:'Cormorant Garamond',Georgia,serif;
+  --font-body:'Hanken Grotesk',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  --bg:   oklch(0.085 var(--bgc) var(--bgh));
+  --bg-1: oklch(0.115 var(--bgc) var(--bgh));
+  --bg-2: oklch(0.145 var(--bgc) var(--bgh));
+  --bg-3: oklch(0.185 var(--bgc) var(--bgh));
+  --line: oklch(0.92 0.01 var(--bgh) / 0.10);
+  --line-2: oklch(0.92 0.01 var(--bgh) / 0.18);
+  --text:   oklch(0.97 0.006 var(--bgh));
+  --text-2: oklch(0.74 0.012 var(--bgh));
+  --text-3: oklch(0.55 0.012 var(--bgh));
+  --accent-ink: oklch(from var(--accent) 0.99 0.02 h);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;overflow:hidden}
+button{font-family:inherit;color:inherit;cursor:pointer;background:none;border:none}
+input{font-family:inherit;color:inherit}
+::selection{background:color-mix(in oklch,var(--accent) 40%,transparent)}
+a{color:inherit}
+em{font-style:italic}
+
+/* ── Layout ─────────────────────────────────────────── */
+.auth{display:grid;grid-template-columns:1.12fr .88fr;height:100dvh}
+
+/* ── Brand panel (poster wall) ──────────────────────── */
+.auth-brand{position:relative;overflow:hidden;background:var(--bg);isolation:isolate}
+.brand-marquee{position:absolute;inset:-8% -4%;display:flex;gap:18px;transform:rotate(-8deg) scale(1.18);opacity:.55;z-index:0}
+.bm-col{display:flex;flex-direction:column;gap:18px;flex:1;animation:drift var(--s,42s) linear infinite}
+.bm-col.rev{animation-direction:reverse}
+.bm-poster{aspect-ratio:2/3;border-radius:12px;border:1px solid var(--line);position:relative;overflow:hidden;
+  display:grid;place-items:center}
+.bm-poster svg{width:30%;height:30%;opacity:.4;stroke:currentColor;fill:none;stroke-width:1}
+.bm-poster i{position:absolute;inset:0;opacity:.45;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+@keyframes drift{from{transform:translateY(0)}to{transform:translateY(-33.33%)}}
+.brand-veil{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    radial-gradient(70% 60% at 22% 18%,color-mix(in oklch,var(--accent) 26%,transparent) 0%,transparent 55%),
+    linear-gradient(105deg,var(--bg) 18%,color-mix(in oklch,var(--bg) 55%,transparent) 50%,color-mix(in oklch,var(--bg) 88%,transparent) 100%)}
+
+.brand-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:space-between;
+  padding:clamp(32px,4vw,52px)}
+.brand-logo{display:flex;align-items:center;gap:12px}
+.brand-logo .mark{width:34px;height:34px}
+.brand-logo .mark svg{overflow:visible}
+.lm-ring{fill:none;stroke:var(--text);stroke-width:1.4;opacity:.55;transform-origin:center}
+.lm-ring-2{stroke:var(--accent);opacity:.95}
+.lm-pupil{fill:var(--accent);stroke:none;transform-origin:center;animation:pulse 3.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.28);opacity:.7}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.brand-logo:hover .lm-ring-1{animation:spin 9s linear infinite}
+.brand-word{font-family:var(--font-display);font-size:27px;font-weight:600;letter-spacing:.01em}
+
+.brand-copy{max-width:30ch}
+.brand-kicker{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--text-3);margin-bottom:20px}
+.brand-head{font-family:var(--font-display);font-weight:600;font-size:clamp(38px,4.4vw,60px);line-height:1.02;letter-spacing:-.01em}
+.brand-head em{color:var(--accent)}
+.brand-rotator{height:1.6em;margin-top:22px;position:relative;color:var(--text-2);font-size:16px}
+.brand-rotator span{position:absolute;inset:0;opacity:0;transform:translateY(8px);transition:opacity .6s,transform .6s}
+.brand-rotator span.on{opacity:1;transform:none}
+.brand-foot{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;color:var(--text-3)}
+
+/* ── Form panel ─────────────────────────────────────── */
+.auth-panel{display:grid;place-items:center;padding:clamp(24px,4vw,48px);overflow-y:auto;position:relative}
+.auth-panel::-webkit-scrollbar{width:8px}.auth-panel::-webkit-scrollbar-thumb{background:var(--bg-3);border-radius:8px}
+.auth-card{width:100%;max-width:392px}
+.card-logo{display:none}
+.auth-head{margin-bottom:26px}
+.auth-eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.auth-title{font-family:var(--font-display);font-weight:600;font-size:clamp(34px,4.5vw,44px);line-height:1.04;margin:9px 0 8px;text-wrap:balance}
+.auth-sub{color:var(--text-3);font-size:14.5px}
+
+/* social */
+.social{display:flex;flex-direction:column;gap:11px;margin-bottom:22px}
+.social-btn{display:flex;align-items:center;justify-content:center;gap:11px;height:50px;border-radius:13px;
+  background:var(--bg-1);border:1px solid var(--line-2);color:var(--text);font-size:14.5px;font-weight:600;
+  transition:background .2s,border-color .2s,transform .12s}
+.social-btn:hover{background:var(--bg-2);border-color:var(--line-2)}
+.social-btn:active{transform:scale(.985)}
+.social-btn svg{width:20px;height:20px;flex:none}
+
+.divider{display:flex;align-items:center;gap:14px;margin:0 0 22px;color:var(--text-3);
+  font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase}
+.divider::before,.divider::after{content:"";height:1px;background:var(--line);flex:1}
+
+/* fields */
+.fields{display:flex;flex-direction:column;gap:14px}
+.field{display:flex;flex-direction:column;gap:7px;opacity:1;transition:opacity .35s,max-height .4s,margin .35s}
+.field.collapsing{max-height:0;opacity:0;overflow:hidden;margin:0;pointer-events:none}
+.field label{font-size:12.5px;font-weight:600;color:var(--text-2);letter-spacing:.01em}
+.field-input{position:relative;display:flex;align-items:center}
+.field-input input{width:100%;height:52px;background:var(--bg-1);border:1px solid var(--line-2);border-radius:13px;
+  padding:0 16px;font-size:15px;color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s,background .2s}
+.field-input input::placeholder{color:var(--text-3)}
+.field-input input:focus{border-color:color-mix(in oklch,var(--accent) 60%,transparent);background:var(--bg-2);
+  box-shadow:0 0 0 4px color-mix(in oklch,var(--accent) 13%,transparent)}
+.field.invalid .field-input input{border-color:color-mix(in oklch,var(--accent) 75%,transparent)}
+.field .err{font-size:12px;color:color-mix(in oklch,var(--accent) 85%,white);min-height:0;opacity:0;
+  transform:translateY(-3px);transition:.2s}
+.field.invalid .err{opacity:1;transform:none}
+.peek{position:absolute;right:8px;width:38px;height:38px;display:grid;place-items:center;color:var(--text-3);
+  border-radius:9px;transition:color .2s,background .2s}
+.peek:hover{color:var(--text);background:var(--bg-3)}
+
+.row-aux{display:flex;align-items:center;justify-content:space-between;margin-top:2px;font-size:13px}
+.remember{display:flex;align-items:center;gap:9px;color:var(--text-2);cursor:pointer;user-select:none}
+.remember input{position:absolute;opacity:0;pointer-events:none}
+.box{width:18px;height:18px;border-radius:6px;border:1px solid var(--line-2);background:var(--bg-1);display:grid;
+  place-items:center;transition:.2s}
+.box svg{width:12px;height:12px;opacity:0;transform:scale(.6);transition:.18s;color:var(--accent-ink)}
+.remember input:checked+.box{background:var(--accent);border-color:transparent}
+.remember input:checked+.box svg{opacity:1;transform:none}
+.link{color:var(--accent);font-weight:600;text-decoration:none;transition:opacity .2s}
+.link:hover{opacity:.78}
+
+.submit{width:100%;height:54px;margin-top:22px;border-radius:13px;background:var(--accent);color:var(--accent-ink);
+  font-size:15.5px;font-weight:600;letter-spacing:.01em;display:flex;align-items:center;justify-content:center;gap:9px;
+  box-shadow:0 10px 30px -10px color-mix(in oklch,var(--accent) 75%,transparent);
+  transition:transform .12s,background .2s;overflow:hidden;position:relative}
+.submit:hover{transform:translateY(-1px);background:color-mix(in oklch,var(--accent) 90%,white)}
+.submit:active{transform:translateY(0) scale(.99)}
+.submit.loading{pointer-events:none}
+.submit .spin-ico{width:19px;height:19px;border:2px solid color-mix(in oklch,var(--accent-ink) 40%,transparent);
+  border-top-color:var(--accent-ink);border-radius:50%;animation:rot .7s linear infinite;display:none}
+.submit.loading .spin-ico{display:block}.submit.loading .submit-label,.submit.loading .submit-arrow{display:none}
+@keyframes rot{to{transform:rotate(360deg)}}
+.submit-arrow{transition:transform .25s}.submit:hover .submit-arrow{transform:translateX(3px)}
+
+.switch{text-align:center;margin-top:24px;color:var(--text-3);font-size:14px}
+.switch button{color:var(--accent);font-weight:600}
+.switch button:hover{opacity:.8}
+.legal{text-align:center;margin-top:22px;font-size:11.5px;color:var(--text-3);line-height:1.6}
+.legal a{color:var(--text-2);text-decoration:underline;text-underline-offset:2px}
+
+/* mode swap animation */
+.swap{animation:swapIn .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes swapIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* entrance */
+.reveal{opacity:0;animation:rise .65s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--d,0s)}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+html.doc-hidden .reveal{opacity:1!important;transform:none!important}
+html[data-motion="off"] *{animation:none!important}
+html[data-motion="off"] .reveal{opacity:1!important;transform:none!important}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001s!important}.reveal{opacity:1!important;transform:none!important}}
+
+/* ── Responsive ─────────────────────────────────────── */
+@media (max-width:880px){
+  .auth{grid-template-columns:1fr}
+  .auth-brand{display:none}
+  .card-logo{display:flex;align-items:center;gap:11px;margin-bottom:30px}
+  .card-logo .mark{width:30px;height:30px}
+  .card-logo .mark svg{overflow:visible}
+  .card-logo .brand-word{font-size:24px}
+  .auth-panel{align-items:flex-start;padding-top:max(40px,8vh)}
+}
+</style>
+</head>
+<body>
+<div class="auth">
+  <aside class="auth-brand">
+    <div class="brand-marquee" id="marquee"></div>
+    <div class="brand-veil"></div>
+    <div class="brand-content">
+      <div class="brand-logo reveal">
+        <span class="mark">
+          <svg viewBox="0 0 40 40"><circle class="lm-ring lm-ring-1" cx="20" cy="20" r="18"/><circle class="lm-ring lm-ring-2" cx="20" cy="20" r="12.5"/><circle class="lm-pupil" cx="20" cy="20" r="5"/></svg>
+        </span>
+        <span class="brand-word">Lumen</span>
+      </div>
+      <div class="brand-copy reveal" style="--d:.12s">
+        <p class="brand-kicker">Your private cinema</p>
+        <h2 class="brand-head">Every film you've loved, <em>remembered.</em></h2>
+        <div class="brand-rotator" id="rotator">
+          <span>Rate it once — we'll find the next one.</span>
+          <span>A library that learns your taste.</span>
+          <span>No noise. Just the films that matter to you.</span>
+        </div>
+      </div>
+      <p class="brand-foot reveal" style="--d:.2s">© 2026 Lumen · Curated by you</p>
+    </div>
+  </aside>
+
+  <main class="auth-panel">
+    <div class="auth-card">
+      <div class="card-logo">
+        <span class="mark"><svg viewBox="0 0 40 40"><circle class="lm-ring lm-ring-1" cx="20" cy="20" r="18"/><circle class="lm-ring lm-ring-2" cx="20" cy="20" r="12.5"/><circle class="lm-pupil" cx="20" cy="20" r="5"/></svg></span>
+        <span class="brand-word">Lumen</span>
+      </div>
+
+      <div class="auth-head" id="head">
+        <p class="auth-eyebrow" id="eyebrow">Welcome back</p>
+        <h1 class="auth-title" id="title">Sign in to Lumen</h1>
+        <p class="auth-sub" id="sub">Pick up right where your reel left off.</p>
+      </div>
+
+      <div class="social">
+        <button class="social-btn" type="button" data-prov="Google">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 11v2.8h3.9c-.16 1-.65 1.86-1.4 2.43v2h2.27C18.1 18.9 19 16.7 19 14.1c0-.6-.05-1.18-.15-1.73H12z"/><path d="M12 19c1.9 0 3.5-.63 4.66-1.7l-2.27-1.77c-.63.42-1.43.67-2.39.67-1.84 0-3.4-1.24-3.96-2.9H5.7v1.82C6.85 17.6 9.2 19 12 19z"/><path d="M8.04 13.3a4.2 4.2 0 0 1 0-2.6V8.88H5.7a7 7 0 0 0 0 6.24l2.34-1.82z"/><path d="M12 7.6c1.04 0 1.97.36 2.7 1.06l2-2C15.5 5.5 13.9 4.9 12 4.9c-2.8 0-5.15 1.4-6.3 3.98l2.34 1.82C8.6 8.84 10.16 7.6 12 7.6z"/></svg>
+          Continue with Google
+        </button>
+        <button class="social-btn" type="button" data-prov="Apple">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.6c0-2 1.6-3 1.7-3-1-1.4-2.4-1.6-2.9-1.6-1.2-.12-2.4.7-3 .7-.6 0-1.6-.7-2.6-.68-1.3.02-2.6.78-3.2 1.96-1.4 2.4-.36 6 1 7.96.66.96 1.45 2.04 2.5 2 1-.04 1.38-.65 2.6-.65 1.2 0 1.55.65 2.6.63 1.07-.02 1.75-.98 2.4-1.95.76-1.1 1.07-2.16 1.08-2.22-.02-.01-2.06-.8-2.08-3.15zM14.5 6.3c.55-.67.92-1.6.82-2.53-.8.03-1.76.53-2.33 1.2-.5.58-.95 1.53-.83 2.43.9.07 1.8-.45 2.34-1.1z"/></svg>
+          Continue with Apple
+        </button>
+      </div>
+
+      <div class="divider">or</div>
+
+      <form class="fields" id="form" novalidate>
+        <div class="field collapsing" id="f-name">
+          <label for="name">Name</label>
+          <div class="field-input"><input id="name" type="text" placeholder="Your name" autocomplete="name" /></div>
+          <span class="err">Please enter your name.</span>
+        </div>
+        <div class="field" id="f-email">
+          <label for="email">Email</label>
+          <div class="field-input"><input id="email" type="email" placeholder="you@example.com" autocomplete="email" /></div>
+          <span class="err">Enter a valid email address.</span>
+        </div>
+        <div class="field" id="f-pass">
+          <label for="pass">Password</label>
+          <div class="field-input">
+            <input id="pass" type="password" placeholder="••••••••" autocomplete="current-password" />
+            <button class="peek" type="button" id="peek" aria-label="Show password">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <span class="err" id="pass-err">Use at least 8 characters.</span>
+        </div>
+
+        <div class="row-aux" id="row-aux">
+          <label class="remember"><input type="checkbox" id="remember" checked /><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17l9-10"/></svg></span>Stay signed in</label>
+          <a class="link" href="#" id="forgot">Forgot password?</a>
+        </div>
+
+        <button class="submit" type="submit" id="submit">
+          <span class="spin-ico"></span>
+          <span class="submit-label" id="submit-label">Sign in</span>
+          <svg class="submit-arrow" id="submit-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="19" height="19"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </form>
+
+      <p class="switch" id="switch">New to Lumen? <button type="button" id="toggle">Create an account</button></p>
+      <p class="legal" id="legal">By continuing you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.</p>
+    </div>
+  </main>
+</div>
+
+<script>
+(function(){
+  function syncVis(){ document.documentElement.classList.toggle('doc-hidden', document.hidden); }
+  document.addEventListener('visibilitychange', syncVis); syncVis();
+
+  /* poster wall */
+  var hues=[28,165,348,210,38,300,18,260,200,130,250,8,160,95];
+  var mq=document.getElementById('marquee');
+  function poster(h){
+    var d=document.createElement('div'); d.className='bm-poster';
+    d.style.background='radial-gradient(120% 120% at 30% 18%, oklch(0.26 0.05 '+h+') 0%, oklch(0.155 0.03 '+h+') 55%, oklch(0.11 0.02 '+h+') 100%)';
+    d.style.color='oklch(0.5 0.08 '+h+')';
+    d.innerHTML='<i></i><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="15"/><circle cx="20" cy="20" r="9"/><circle cx="20" cy="20" r="3" fill="currentColor" stroke="none"/></svg>';
+    return d;
+  }
+  var speeds=[46,38,52];
+  for(var c=0;c<3;c++){
+    var col=document.createElement('div'); col.className='bm-col'+(c===1?' rev':''); col.style.setProperty('--s',speeds[c]+'s');
+    var set=[];
+    for(var i=0;i<5;i++) set.push(hues[(c*5+i)%hues.length]);
+    var inner=set.concat(set); /* duplicate for seamless loop */
+    inner.forEach(function(h){ col.appendChild(poster(h)); });
+    mq.appendChild(col);
+  }
+
+  /* rotator */
+  var rot=document.getElementById('rotator').children, ri=0;
+  rot[0].classList.add('on');
+  setInterval(function(){ rot[ri].classList.remove('on'); ri=(ri+1)%rot.length; rot[ri].classList.add('on'); }, 3600);
+
+  /* password peek */
+  var pass=document.getElementById('pass'), peek=document.getElementById('peek');
+  peek.addEventListener('click', function(){
+    var show = pass.type==='password';
+    pass.type = show?'text':'password';
+    peek.innerHTML = show
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M3 3l18 18M10.6 10.6a3 3 0 0 0 4.2 4.2M9.4 5.2A9.7 9.7 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4M6.2 6.2A17 17 0 0 0 2 12s3.5 7 10 7a9.7 9.7 0 0 0 3-.5"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+  });
+
+  /* mode toggle */
+  var mode='signin';
+  var T={
+    signin:{eyebrow:'Welcome back',title:'Sign in to Lumen',sub:'Pick up right where your reel left off.',
+            submit:'Sign in',switchTxt:'New to Lumen? ',switchBtn:'Create an account',pAuto:'current-password',pErr:'Enter your password.'},
+    signup:{eyebrow:'Get started',title:'Create your account',sub:'Start a library that learns what you love.',
+            submit:'Create account',switchTxt:'Already have an account? ',switchBtn:'Sign in',pAuto:'new-password',pErr:'Use at least 8 characters.'}
+  };
+  var els={
+    eyebrow:document.getElementById('eyebrow'),title:document.getElementById('title'),sub:document.getElementById('sub'),
+    label:document.getElementById('submit-label'),switch:document.getElementById('switch'),fname:document.getElementById('f-name'),
+    head:document.getElementById('head'),rowAux:document.getElementById('row-aux'),passErr:document.getElementById('pass-err')
+  };
+  function applyMode(){
+    var t=T[mode];
+    els.eyebrow.textContent=t.eyebrow; els.title.textContent=t.title; els.sub.textContent=t.sub;
+    els.label.textContent=t.submit; els.passErr.textContent=t.pErr;
+    pass.setAttribute('autocomplete',t.pAuto);
+    els.switch.innerHTML=t.switchTxt+'<button type="button" id="toggle">'+t.switchBtn+'</button>';
+    document.getElementById('toggle').addEventListener('click',toggle);
+    els.fname.classList.toggle('collapsing', mode!=='signup');
+    els.fname.style.maxHeight = mode==='signup' ? '110px' : '0px';
+    els.rowAux.style.display = mode==='signin' ? 'flex' : 'none';
+    [els.eyebrow,els.title,els.sub].forEach(function(e){ e.classList.remove('swap'); void e.offsetWidth; e.classList.add('swap'); });
+    clearErrors();
+  }
+  function toggle(){ mode = mode==='signin'?'signup':'signin'; applyMode(); }
+  document.getElementById('toggle').addEventListener('click',toggle);
+  // init name collapsed height
+  els.fname.style.maxHeight='0px';
+
+  /* validation + submit */
+  function clearErrors(){ ['f-name','f-email','f-pass'].forEach(function(id){ document.getElementById(id).classList.remove('invalid'); }); }
+  function emailOk(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+  var form=document.getElementById('form'), submit=document.getElementById('submit');
+  form.addEventListener('submit', function(e){
+    e.preventDefault(); clearErrors();
+    var ok=true;
+    if(mode==='signup' && !document.getElementById('name').value.trim()){ document.getElementById('f-name').classList.add('invalid'); ok=false; }
+    if(!emailOk(document.getElementById('email').value.trim())){ document.getElementById('f-email').classList.add('invalid'); ok=false; }
+    if(pass.value.length < (mode==='signup'?8:1)){ document.getElementById('f-pass').classList.add('invalid'); ok=false; }
+    if(!ok){ var f=form.querySelector('.invalid input'); if(f) f.focus(); return; }
+    submit.classList.add('loading');
+    setTimeout(function(){ window.location.href='Lumen \u2014 Movie Tracker.html'; }, 1100);
+  });
+  document.querySelectorAll('.social-btn').forEach(function(b){
+    b.addEventListener('click',function(){ window.location.href='Lumen \u2014 Movie Tracker.html'; });
+  });
+  document.getElementById('forgot').addEventListener('click',function(e){ e.preventDefault(); });
+})();
+</script>
+</body>
+</html>
