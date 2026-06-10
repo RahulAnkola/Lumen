@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { signOut } from "firebase/auth";
 import { auth, isConfigured } from "./firebase";
 import { useAuth } from "./hooks/useAuth";
@@ -12,6 +12,8 @@ import { RateModal } from "./overlays/RateModal";
 import { Takeover } from "./overlays/Takeover";
 import { Logo } from "./components/Logo";
 import { Icon } from "./components/Icon";
+import { fetchDetails } from "./tmdb";
+import { buildClusterModel, predictRating } from "./clustering";
 
 const NAV = [
   { id: "home", label: "Search", icon: "search" },
@@ -22,11 +24,14 @@ const NAV = [
 
 export default function App() {
   const user = useAuth();
-  const { ratings, watchlist, loading, saveRating, toggleWatchlist } = useUserData(user?.uid);
+  const { ratings, watchlist, dismissed, loading, saveRating, toggleWatchlist, dismissItem } = useUserData(user?.uid);
   const [view, setView] = useState("home");
   const [modal, setModal] = useState(null);
   const [takeover, setTakeover] = useState(null);
   const scrollRef = useRef(null);
+
+  // Cluster model — rebuilds when ratings change, used for predicted ratings in modal
+  const clusterModel = useMemo(() => buildClusterModel(ratings), [ratings]);
 
   if (!isConfigured) return <SetupPage />;
 
@@ -42,12 +47,23 @@ export default function App() {
 
   const go = (v) => { setView(v); if (scrollRef.current) scrollRef.current.scrollTop = 0; };
 
-  const openMovie = (item) => setModal(item);
+  const openMovie = async (item) => {
+    setModal(item); // open immediately with what we have
+    // fetch full details in background to get accurate season count etc.
+    const details = await fetchDetails(item.tmdbId, item.mediaType);
+    if (details) setModal(details);
+  };
 
   const handleSaveRating = async (item, value) => {
     await saveRating(item, value);
     setModal(null);
     setTimeout(() => setTakeover({ item, rating: value }), 180);
+  };
+
+  // Save rating silently — no Takeover screen
+  const handleSaveRatingOnly = async (item, value) => {
+    await saveRating(item, value);
+    setModal(null);
   };
 
   const rateSimilar = (item) => { setTakeover(null); setTimeout(() => setModal(item), 280); };
@@ -88,7 +104,7 @@ export default function App() {
         <div className="lm-view" key={view}>
           {view === "home" && <HomeView {...shared} />}
           {view === "library" && <LibraryView {...shared} />}
-          {view === "foryou" && <ForYouView {...shared} />}
+          {view === "foryou" && <ForYouView {...shared} dismissed={dismissed} onDismiss={dismissItem} uid={user.uid} />}
           {view === "watchlist" && <WatchlistView {...shared} />}
         </div>
       </main>
@@ -107,7 +123,9 @@ export default function App() {
           item={modal}
           currentRating={ratings[`${modal.mediaType}_${modal.tmdbId}`]?.value}
           inWatchlist={!!watchlist[`${modal.mediaType}_${modal.tmdbId}`]}
+          predictedRating={clusterModel ? predictRating(modal, clusterModel) : null}
           onSave={handleSaveRating}
+          onSaveOnly={handleSaveRatingOnly}
           onToggleWatch={toggleWatchlist}
           onClose={() => setModal(null)}
         />

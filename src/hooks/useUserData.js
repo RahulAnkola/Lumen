@@ -7,10 +7,11 @@ import { db } from "../firebase";
 export function useUserData(uid) {
   const [ratings, setRatings] = useState({});
   const [watchlist, setWatchlist] = useState({});
+  const [dismissed, setDismissed] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!uid) { setRatings({}); setWatchlist({}); setLoading(false); return; }
+    if (!uid) { setRatings({}); setWatchlist({}); setDismissed({}); setLoading(false); return; }
     setLoading(true);
     const unsub1 = onSnapshot(collection(db, "users", uid, "ratings"), (snap) => {
       const map = {};
@@ -23,7 +24,12 @@ export function useUserData(uid) {
       snap.forEach((d) => { map[d.id] = d.data(); });
       setWatchlist(map);
     });
-    return () => { unsub1(); unsub2(); };
+    const unsub3 = onSnapshot(collection(db, "users", uid, "dismissed"), (snap) => {
+      const map = {};
+      snap.forEach((d) => { map[d.id] = d.data(); });
+      setDismissed(map);
+    });
+    return () => { unsub1(); unsub2(); unsub3(); };
   }, [uid]);
 
   const saveRating = useCallback(async (item, value) => {
@@ -40,6 +46,7 @@ export function useUserData(uid) {
       genres: item.genres,
       runtime: item.runtime || 0,
       seasons: item.seasons || 0,
+      originalLanguage: item.originalLanguage || null,
       ratedAt: serverTimestamp(),
     });
     // graduate from watchlist when rated
@@ -68,5 +75,17 @@ export function useUserData(uid) {
     }
   }, [uid, watchlist]);
 
-  return { ratings, watchlist, loading, saveRating, toggleWatchlist };
+  const dismissItem = useCallback(async (item) => {
+    if (!uid) return;
+    const key = `${item.mediaType}_${item.tmdbId}`;
+    await setDoc(doc(db, "users", uid, "dismissed", key), {
+      tmdbId: item.tmdbId,
+      mediaType: item.mediaType,
+      title: item.title,
+      originalLanguage: item.originalLanguage || null,
+      dismissedAt: serverTimestamp(),
+    });
+  }, [uid]);
+
+  return { ratings, watchlist, dismissed, loading, saveRating, toggleWatchlist, dismissItem };
 }

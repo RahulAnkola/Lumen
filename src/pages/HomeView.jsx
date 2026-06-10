@@ -4,6 +4,7 @@ import { Poster } from "../components/Poster";
 import { RatingChip } from "../components/RatingChip";
 import { MovieCard, metaLine } from "../components/MovieCard";
 import { searchMulti } from "../tmdb";
+import { HomeBackdrop } from "../components/HomeBackdrop";
 
 export function HomeView({ ratings, watchlist, onOpen, onToggleWatch, onGo }) {
   const [q, setQ] = useState("");
@@ -58,6 +59,7 @@ export function HomeView({ ratings, watchlist, onOpen, onToggleWatch, onGo }) {
   return (
     <div className="lm-home">
       <div className="lm-home-aura" />
+      <HomeBackdrop />
       <div className="lm-hero">
         <div className="lm-hero-badge lm-reveal">A quiet place to keep the films you've loved</div>
         <h1 className="lm-hero-title lm-reveal" style={{ "--d": ".05s" }}>

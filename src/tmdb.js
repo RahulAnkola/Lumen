@@ -26,6 +26,26 @@ export async function searchMulti(query, signal) {
     .map(normalizeTmdb);
 }
 
+export async function fetchWatchProviders(tmdbId, mediaType) {
+  // Region: set VITE_WATCH_REGION in .env to override (e.g. US, GB, IN)
+  const region = import.meta.env.VITE_WATCH_REGION || "IN";
+  try {
+    const res = await fetch(`${BASE}/${mediaType}/${tmdbId}/watch/providers`, {
+      headers: headers(),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const r = data.results?.[region];
+    if (!r) return null;
+    return {
+      link: r.link || null,
+      flatrate: r.flatrate || [],   // subscription streaming
+      rent: r.rent || [],
+      buy: r.buy || [],
+    };
+  } catch { return null; }
+}
+
 export async function fetchDetails(tmdbId, mediaType) {
   const res = await fetch(`${BASE}/${mediaType}/${tmdbId}?language=en-US`, {
     headers: headers(),
@@ -49,7 +69,7 @@ export async function fetchSimilar(tmdbId, mediaType, limit = 5) {
 
 export async function fetchRecommendationsForIds(ratedItems, excludeIds, limit = 18) {
   const topRated = ratedItems
-    .filter((r) => r.value >= 55)
+    .filter((r) => r.value >= 6)
     .sort((a, b) => b.value - a.value)
     .slice(0, 5);
 
@@ -97,8 +117,9 @@ function normalizeTmdb(r) {
       typeof g === "object" ? g.name : GENRE_MAP[g] || ""
     ).filter(Boolean),
     runtime: isMovie ? (r.runtime || 0) : 0,
-    seasons: !isMovie ? (r.number_of_seasons || r.seasons?.length || 1) : 0,
+    seasons: !isMovie ? (r.number_of_seasons || r.seasons?.length || null) : 0,
     voteAverage: r.vote_average || 0,
+    originalLanguage: r.original_language || null,
   };
 }
 

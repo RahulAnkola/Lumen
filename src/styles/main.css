@@ -127,11 +127,11 @@ html[data-grain="off"] .lm-poster-grain{display:none}
 .lm-hero-title em{color:var(--accent);font-style:italic}
 
 /* search */
-.lm-search{position:relative;max-width:600px;margin:0 auto;z-index:5}
+.lm-search{position:relative;max-width:600px;margin:0 auto;z-index:20}
 .lm-search-bar{display:flex;align-items:center;gap:14px;padding:0 18px;height:64px;
   background:var(--bg-1);border:1px solid var(--line-2);border-radius:16px;
   transition:border-color .25s,box-shadow .25s,background .25s;color:var(--text-3)}
-.lm-search.is-focused .lm-search-bar{border-color:color-mix(in oklch,var(--accent) 55%,transparent);
+.lm-search.is-focused .lm-search-bar{border-color:var(--line-2);
   background:var(--bg-2);color:var(--accent);
   box-shadow:0 0 0 4px color-mix(in oklch,var(--accent) 14%,transparent),0 20px 50px -20px oklch(0 0 0 / .8)}
 .lm-search.has-results.is-focused .lm-search-bar{border-bottom-left-radius:0;border-bottom-right-radius:0}
@@ -142,7 +142,7 @@ html[data-grain="off"] .lm-poster-grain{display:none}
 
 .lm-suggest{position:absolute;left:0;right:0;top:100%;background:var(--bg-1);
   border:1px solid var(--line-2);border-top:none;border-radius:0 0 16px 16px;overflow:hidden;
-  list-style:none;box-shadow:0 30px 60px -25px oklch(0 0 0 / .9);z-index:5}
+  list-style:none;box-shadow:0 30px 60px -25px oklch(0 0 0 / .9);z-index:20}
 .lm-suggest-row{display:flex;align-items:center;gap:14px;padding:11px 16px;cursor:pointer;text-align:left;
   border-top:1px solid var(--line);transition:background .15s;opacity:0;animation:sugIn .32s ease forwards;animation-delay:var(--d)}
 .lm-suggest-row:first-child{border-top:none}
@@ -164,7 +164,7 @@ html[data-grain="off"] .lm-poster-grain{display:none}
   border-radius:6px;background:var(--bg-1);margin:0 2px}
 
 /* strips / rows */
-.lm-strip{margin-top:46px;position:relative;z-index:1}
+.lm-strip{margin-top:46px;position:relative;z-index:0}
 .lm-strip-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:18px}
 .lm-strip-head h2{font-family:var(--font-display);font-weight:600;font-size:27px;letter-spacing:-.01em}
 .lm-row{display:flex;gap:var(--gap);overflow-x:auto;padding-bottom:10px;scroll-snap-type:x proximity}
@@ -218,6 +218,51 @@ html[data-grain="off"] .lm-poster-grain{display:none}
 .lm-because{font-size:12px;color:var(--text-3);margin-top:9px}
 .lm-because b{color:var(--text-2);font-weight:600}
 .lm-because-sm{margin-top:7px;font-size:11.5px;padding-left:2px}
+
+/* AI-enhanced indicators */
+.lm-ai-badge{
+  display:inline-flex;align-items:center;gap:4px;margin-left:10px;
+  font-family:var(--font-mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;
+  color:var(--accent);background:color-mix(in oklch,var(--accent) 12%,transparent);
+  border:1px solid color-mix(in oklch,var(--accent) 30%,transparent);
+  border-radius:99px;padding:2px 8px;vertical-align:middle;
+}
+.lm-ai-pick{
+  display:flex;align-items:center;gap:4px;
+  color:var(--accent)!important;
+}
+
+/* For You — refresh button + cache age */
+.lm-refresh-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:9px;white-space:nowrap;flex-shrink:0;
+  font-size:13px;
+}
+.lm-refresh-btn:disabled{opacity:.45;pointer-events:none}
+.lm-cache-age{color:var(--text-3);font-size:12.5px}
+
+/* Not-for-me dismiss button on For You cards */
+.lm-dismiss-btn{
+  position:absolute;top:9px;right:9px;z-index:5;
+  display:flex;align-items:center;gap:4px;
+  padding:5px 9px;border-radius:7px;
+  background:oklch(0.08 0 0 / .82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:1px solid var(--line-2);color:var(--text-3);
+  font-size:11px;font-weight:600;letter-spacing:.02em;white-space:nowrap;
+  opacity:0;transform:translateY(-3px);
+  transition:opacity .2s,transform .2s,background .2s,color .2s,border-color .2s;
+  pointer-events:none;
+}
+.lm-rec:hover .lm-dismiss-btn{opacity:1;transform:none;pointer-events:auto}
+.lm-dismiss-btn:hover{
+  background:color-mix(in oklch,var(--accent) 20%,oklch(0.12 0 0 / .9));
+  color:var(--accent);
+  border-color:color-mix(in oklch,var(--accent) 45%,transparent);
+}
+
+/* Not-for-me in spotlight actions */
+.lm-dismiss-spotlight{color:var(--text-3)!important}
+.lm-dismiss-spotlight:hover{color:var(--accent)!important;border-color:color-mix(in oklch,var(--accent) 40%,transparent)!important}
 
 /* spotlight (For You top pick) */
 .lm-spotlight{display:grid;grid-template-columns:200px 1fr;gap:34px;align-items:center;
@@ -278,6 +323,47 @@ html[data-grain="off"] .lm-poster-grain{display:none}
 .lm-chips{display:flex;gap:7px;flex-wrap:wrap;margin:15px 0}
 .lm-genre{font-size:11.5px;color:var(--text-2);padding:4px 11px;border:1px solid var(--line-2);border-radius:99px}
 .lm-modal-log{color:var(--text-2);font-size:14.5px;line-height:1.6;margin-bottom:24px;text-wrap:pretty}
+
+/* Watch providers */
+.lm-providers{display:flex;align-items:center;gap:10px;margin:4px 0 18px;min-height:36px}
+.lm-providers-label{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3);white-space:nowrap;flex-shrink:0}
+.lm-providers-logos{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.lm-provider-wrap{display:block;border-radius:8px;overflow:hidden;transition:transform .15s,box-shadow .15s;flex-shrink:0}
+.lm-provider-wrap:hover{transform:scale(1.1);box-shadow:0 4px 14px oklch(0 0 0/.5)}
+.lm-provider-logo{width:32px;height:32px;object-fit:cover;display:block}
+/* Predicted rating badge */
+.lm-pred-badge{
+  position:absolute;top:9px;left:9px;z-index:5;
+  display:inline-flex;align-items:center;
+  font-family:var(--font-mono);font-size:10.5px;font-weight:600;letter-spacing:.04em;
+  /* Dark opaque background so it's readable on any poster colour (light or dark) */
+  color:oklch(0.78 0.14 195);
+  background:oklch(0.1 0 0 / 0.80);
+  border:1px solid oklch(0.78 0.14 195 / 0.5);
+  border-radius:6px;padding:3px 8px;
+  opacity:0;transform:translateY(-3px);
+  transition:opacity .18s,transform .18s;
+  pointer-events:none;cursor:default;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+.lm-rec:hover .lm-pred-badge{opacity:1;transform:none}
+/* Spotlight — always visible, over the poster */
+.lm-spotlight{position:relative}
+.lm-pred-badge-spotlight{
+  opacity:1 !important;transform:none !important;
+  top:12px;left:12px;font-size:11.5px;padding:4px 10px;
+}
+/* Modal — inline next to meta, not absolute */
+.lm-pred-badge-modal{
+  position:static;opacity:1;transform:none;
+  display:inline-flex;margin-left:10px;vertical-align:middle;
+  font-size:11px;padding:2px 8px;
+}
+
+.lm-providers-none{font-size:12.5px;color:var(--text-3);margin:4px 0 18px}
+.lm-providers-loading{opacity:.5}
+.lm-providers-spinner{width:14px;height:14px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--text-3);animation:rot .7s linear infinite;flex-shrink:0}
+
 .lm-modal-rate{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:22px 22px 18px;margin-bottom:22px}
 .lm-modal-actions{display:flex;gap:12px;flex-wrap:wrap}
 @keyframes scrimIn{from{opacity:0}to{opacity:1}}
@@ -359,6 +445,196 @@ html.doc-hidden .lm-take-wash,html.doc-hidden .lm-take-poster,
 html.doc-hidden .lm-take-rec-head,html.doc-hidden .lm-take-done{opacity:1!important;transform:none!important}
 
 html[data-motion="off"] *{animation:none!important}
+
+/* ════════════════════════════════════════════════════════
+   FABULOUS LAYER — pure visual polish, no logic touched
+   ═══════════════════════════════════════════════════════ */
+
+@property --lm-ang{syntax:'<angle>';initial-value:0deg;inherits:false}
+
+/* ── Cinematic atmosphere: vignette + film grain over everything ── */
+body::before{
+  content:"";position:fixed;inset:0;z-index:200;pointer-events:none;
+  background:radial-gradient(135% 110% at 50% 10%,transparent 72%,oklch(0 0 0/.22) 100%);
+}
+body::after{
+  content:"";position:fixed;inset:-50%;z-index:201;pointer-events:none;
+  opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grainShift 1.2s steps(4) infinite;
+}
+html[data-grain="off"] body::after{display:none}
+@keyframes grainShift{
+  0%{transform:translate(0,0)}25%{transform:translate(-2%,1.5%)}
+  50%{transform:translate(1.5%,-1%)}75%{transform:translate(-1%,-2%)}100%{transform:translate(0,0)}
+}
+
+/* ── Nav: glowing hairline + livelier links ── */
+.lm-nav{border-bottom-color:transparent}
+.lm-nav::after{
+  content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;
+  background:linear-gradient(90deg,transparent,
+    color-mix(in oklch,var(--accent) 50%,transparent) 28%,
+    oklch(0.78 0.14 195 / .4) 72%,transparent);
+}
+.lm-nav-link{transition:color .25s,background .25s,transform .2s}
+.lm-nav-link:hover{transform:translateY(-1px)}
+.lm-ring-2{animation:spin 26s linear infinite;transform-origin:center}
+
+/* ── Hero: shimmering italic, breathing aura ── */
+.lm-hero-title em{
+  background:linear-gradient(110deg,var(--accent) 25%,oklch(0.84 0.15 22) 45%,var(--accent) 65%);
+  background-size:220% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:inkShimmer 5.5s ease-in-out infinite;
+}
+@keyframes inkShimmer{0%,100%{background-position:0% 0}50%{background-position:100% 0}}
+.lm-home-aura{
+  opacity:.55;
+  background:
+    radial-gradient(48% 56% at 38% 0%,color-mix(in oklch,var(--accent) 22%,transparent) 0%,transparent 70%),
+    radial-gradient(40% 50% at 66% 6%,oklch(0.78 0.14 195 / .12) 0%,transparent 70%);
+  animation:auraDrift 16s ease-in-out infinite alternate;
+}
+@keyframes auraDrift{
+  from{transform:translateX(-50%) translateY(0) scale(1)}
+  to{transform:translateX(-47%) translateY(18px) scale(1.07)}
+}
+
+/* ── Search: glassier bar, springy rows ── */
+.lm-search-bar{box-shadow:inset 0 1px 0 oklch(1 0 0/.045)}
+.lm-search-input{caret-color:var(--accent)}
+.lm-search.is-focused .lm-search-bar{
+  box-shadow:0 0 0 4px color-mix(in oklch,var(--accent) 14%,transparent),
+    0 24px 60px -22px color-mix(in oklch,var(--accent) 28%,oklch(0 0 0/.8)),
+    inset 0 1px 0 oklch(1 0 0/.06);
+}
+.lm-suggest{backdrop-filter:blur(18px) saturate(130%);-webkit-backdrop-filter:blur(18px) saturate(130%);
+  background:color-mix(in oklch,var(--bg-1) 88%,transparent)}
+.lm-suggest-row{transition:background .15s,transform .2s cubic-bezier(.34,1.56,.64,1)}
+.lm-suggest-row.is-active{transform:translateX(4px)}
+
+/* ── Posters: shine sweep + ken-burns zoom on hover ── */
+.lm-poster img{transition:transform .65s cubic-bezier(.2,.7,.2,1)}
+.lm-card .lm-poster::after{
+  content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(105deg,transparent 38%,oklch(1 0 0/.16) 50%,transparent 62%);
+  transform:translateX(-130%) skewX(-8deg);transition:transform .75s ease;
+}
+.lm-card:hover .lm-poster::after{transform:translateX(130%) skewX(-8deg)}
+.lm-card:hover .lm-poster img{transform:scale(1.07)}
+.lm-card:hover .lm-poster{
+  transform:translateY(-8px) scale(1.015);
+  box-shadow:0 28px 52px -20px oklch(0 0 0/.9),
+    0 0 0 1px color-mix(in oklch,var(--accent) 30%,transparent),
+    0 14px 40px -18px color-mix(in oklch,var(--accent) 35%,transparent);
+}
+.lm-card-cta{transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
+.lm-card:hover .lm-card-cta:hover{transform:scale(1.06)}
+
+/* ── Spotlight: rotating aurora border + floating poster ── */
+.lm-spotlight{
+  border-color:transparent;
+  background:
+    linear-gradient(110deg,var(--bg-1),color-mix(in oklch,var(--bg-1) 70%,var(--bg))) padding-box,
+    conic-gradient(from var(--lm-ang),
+      color-mix(in oklch,var(--accent) 55%,transparent),
+      transparent 25%,
+      oklch(0.78 0.14 195 / .45) 50%,
+      transparent 75%,
+      color-mix(in oklch,var(--accent) 55%,transparent)) border-box;
+  animation:fadeUp .6s cubic-bezier(.2,.8,.2,1) both,lmBorderSpin 9s linear infinite;
+}
+@keyframes lmBorderSpin{to{--lm-ang:360deg}}
+.lm-spotlight-poster{animation:floaty 6.5s ease-in-out infinite}
+.lm-spotlight-poster.lm-poster,.lm-spotlight .lm-poster{
+  box-shadow:0 30px 60px -24px oklch(0 0 0/.85)}
+.lm-spotlight-kicker svg{animation:pulse 2.6s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+
+/* ── Buttons: gradient ink + light sweep ── */
+.lm-btn-primary{
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,var(--accent) 0%,color-mix(in oklch,var(--accent) 78%,oklch(0.5 0.19 15)) 100%);
+}
+.lm-btn-primary::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(105deg,transparent 40%,oklch(1 0 0/.28) 50%,transparent 60%);
+  transform:translateX(-140%);transition:transform .55s ease;
+}
+.lm-btn-primary:hover::after{transform:translateX(140%)}
+.lm-btn{transition:transform .18s cubic-bezier(.34,1.56,.64,1),background .2s,border-color .2s,color .2s,box-shadow .25s}
+.lm-btn-ghost:hover{box-shadow:0 8px 24px -14px oklch(0 0 0/.8)}
+.lm-refresh-btn svg{transition:transform .55s cubic-bezier(.34,1.56,.64,1)}
+.lm-refresh-btn:hover svg{transform:rotate(-200deg)}
+
+/* ── Badges: living details ── */
+.lm-ai-badge{
+  background:linear-gradient(110deg,
+    color-mix(in oklch,var(--accent) 14%,transparent),
+    color-mix(in oklch,var(--accent) 26%,transparent),
+    color-mix(in oklch,var(--accent) 14%,transparent));
+  background-size:220% 100%;animation:inkShimmer 4s ease-in-out infinite;
+}
+.lm-ai-badge svg{animation:pulse 2.2s ease-in-out infinite}
+.lm-pred-badge{box-shadow:0 4px 16px -6px oklch(0.78 0.14 195 / .45)}
+.lm-genre{transition:border-color .25s,color .25s,transform .2s}
+.lm-genre:hover{border-color:color-mix(in oklch,var(--accent) 45%,transparent);color:var(--text);transform:translateY(-1px)}
+.lm-chip{box-shadow:0 4px 14px -6px oklch(0 0 0/.7)}
+
+/* ── Rating slider: glowing thumb ── */
+.lm-rate-input::-webkit-slider-thumb{
+  box-shadow:0 3px 12px oklch(0 0 0/.6),0 0 0 3px var(--accent),
+    0 0 22px -2px color-mix(in oklch,var(--accent) 75%,transparent);
+}
+.lm-rate-num{text-shadow:0 0 40px color-mix(in oklch,var(--accent) 25%,transparent)}
+
+/* ── Takeover: glowing score ── */
+.lm-take-num b{text-shadow:0 0 60px color-mix(in oklch,var(--accent) 45%,transparent)}
+
+/* ── Empty state: gentle float ── */
+.lm-empty-mark{animation:floaty 4.5s ease-in-out infinite;
+  box-shadow:0 18px 40px -18px color-mix(in oklch,var(--accent) 30%,transparent)}
+
+/* ── Modal & view transitions: blur-in ── */
+@keyframes modalIn{
+  from{opacity:0;transform:translateY(28px) scale(.95);filter:blur(12px)}
+  to{opacity:1;transform:none;filter:blur(0)}
+}
+@keyframes viewIn{
+  from{opacity:0;transform:translateY(14px);filter:blur(10px)}
+  to{opacity:1;transform:none;filter:blur(0)}
+}
+.lm-modal{box-shadow:0 40px 90px -30px oklch(0 0 0/.9),
+  0 0 80px -30px color-mix(in oklch,var(--accent) 22%,transparent),
+  inset 0 1px 0 oklch(1 0 0/.05)}
+.lm-provider-wrap:hover{transform:scale(1.14) rotate(-2deg)}
+
+/* ── Scrollbar: accent on hover ── */
+.lm-main::-webkit-scrollbar-thumb:hover{background:color-mix(in oklch,var(--accent) 45%,var(--bg-3))}
+
+/* ── Focus rings for keyboard nav ── */
+:focus-visible{outline:2px solid color-mix(in oklch,var(--accent) 70%,transparent);outline-offset:2px;border-radius:6px}
+input:focus-visible,textarea:focus-visible{outline:none}
+
+/* ── Strip headings: accent tick ── */
+.lm-strip-head h2,.lm-page-title{position:relative}
+.lm-strip-head h2::after{
+  content:"";display:inline-block;width:7px;height:7px;border-radius:50%;
+  background:var(--accent);margin-left:12px;vertical-align:middle;
+  box-shadow:0 0 12px color-mix(in oklch,var(--accent) 80%,transparent);
+  animation:pulse 3s ease-in-out infinite;
+}
+
+/* ── AI reason lines: quiet, clamped — spark carries the signal ── */
+.lm-because-sm.lm-ai-pick{
+  color:var(--text-3)!important;
+  align-items:flex-start;line-height:1.45;
+  max-height:calc(2 * 1.45em);overflow:hidden;
+}
+.lm-because-sm.lm-ai-pick svg{color:var(--accent);margin-top:3px}
+.lm-because.lm-ai-pick:not(.lm-because-sm){color:var(--text-2)!important}
+.lm-because.lm-ai-pick:not(.lm-because-sm) svg{color:var(--accent)}
 html[data-motion="off"] .lm-reveal,html[data-motion="off"] .lm-suggest-row,
 html[data-motion="off"] .lm-take-card,html[data-motion="off"] .lm-take-score,
 html[data-motion="off"] .lm-take-wash,html[data-motion="off"] .lm-take-poster,
@@ -367,3 +643,66 @@ html[data-motion="off"] .lm-take-rec-head,html[data-motion="off"] .lm-take-done{
   *{animation-duration:.001s!important;scroll-behavior:auto!important}
   .lm-reveal,.lm-suggest-row,.lm-take-card{opacity:1!important;transform:none!important}
 }
+
+/* ═══════════ HOME BACKDROP — projector room ═══════════ */
+/* Volumetric god-rays + canvas dust motes behind the hero. */
+
+.lm-home-backdrop{
+  position:absolute;top:-90px;left:50%;transform:translateX(-50%);
+  width:min(1500px,140vw);height:680px;
+  pointer-events:none;z-index:0;overflow:hidden;
+  -webkit-mask:radial-gradient(ellipse 72% 80% at 50% 18%,#000 38%,transparent 78%);
+          mask:radial-gradient(ellipse 72% 80% at 50% 18%,#000 38%,transparent 78%);
+}
+
+/* God-rays: alternating light shafts fanning out from a point above the title */
+.lm-rays{
+  position:absolute;left:50%;top:-160px;width:1400px;height:840px;
+  margin-left:-700px;transform-origin:50% 0;
+  background:conic-gradient(from 156deg at 50% 0%,
+    transparent 0deg,
+    oklch(0.92 0.05 75 / 0.115) 5deg,  transparent 11deg,
+    transparent 16deg,
+    oklch(0.90 0.06 50 / 0.155) 22deg, transparent 29deg,
+    oklch(0.92 0.04 80 / 0.090) 33deg, transparent 38deg,
+    transparent 42deg,
+    oklch(0.88 0.07 35 / 0.130) 46deg, transparent 48deg);
+  animation:lmRaysSway 17s ease-in-out infinite alternate;
+}
+.lm-rays-2{
+  background:conic-gradient(from 162deg at 50% 0%,
+    transparent 0deg,
+    oklch(0.85 0.09 200 / 0.075) 9deg,  transparent 14deg,
+    transparent 20deg,
+    oklch(0.92 0.05 70 / 0.100) 27deg, transparent 35deg,
+    oklch(0.86 0.08 25 / 0.090) 41deg, transparent 44deg);
+  animation:lmRaysSway 23s ease-in-out infinite alternate-reverse;
+}
+@keyframes lmRaysSway{
+  0%  {transform:rotate(-2.2deg);opacity:.75}
+  45% {opacity:1}
+  55% {opacity:.85}
+  100%{transform:rotate(2.2deg);opacity:.95}
+}
+
+/* Soft bright core where the beam lands behind the title */
+.lm-beam-core{
+  position:absolute;left:50%;top:30px;width:780px;height:460px;
+  transform:translateX(-50%);
+  background:radial-gradient(ellipse 50% 42% at 50% 30%,
+    oklch(0.93 0.04 70 / 0.13), transparent 70%);
+  animation:lmCoreBreathe 7s ease-in-out infinite alternate;
+}
+@keyframes lmCoreBreathe{
+  from{opacity:.7;transform:translateX(-50%) scale(.97)}
+  to  {opacity:1;transform:translateX(-50%) scale(1.04)}
+}
+
+.lm-dust{position:absolute;inset:0;width:100%;height:100%;display:block}
+
+/* Hero sits above the backdrop (already z-index:1) — keep aura beneath rays */
+.lm-home-aura{z-index:0}
+
+/* Motion off: freeze sway/breathe (canvas handles its own reduced mode) */
+html[data-motion="off"] .lm-rays,
+html[data-motion="off"] .lm-beam-core{animation:none!important}

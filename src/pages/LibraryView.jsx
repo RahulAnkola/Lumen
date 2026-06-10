@@ -26,8 +26,8 @@ export function LibraryView({ ratings, watchlist, onOpen, onToggleWatch }) {
     });
     const cmp = {
       recent: (a, b) => (b.ratedAt?.seconds || 0) - (a.ratedAt?.seconds || 0),
-      high: (a, b) => b.value - a.value,
-      low: (a, b) => a.value - b.value,
+      high:   (a, b) => b.value - a.value,
+      low:    (a, b) => a.value - b.value,
       az: (a, b) => (a.title || "").localeCompare(b.title || ""),
       year: (a, b) => (b.year || 0) - (a.year || 0),
     }[sort];

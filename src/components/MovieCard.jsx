@@ -3,12 +3,13 @@ import { RatingChip } from "./RatingChip";
 import { Icon } from "./Icon";
 
 export function metaLine(item) {
-  const dur = item.mediaType === "tv"
-    ? `${item.seasons} season${item.seasons !== 1 ? "s" : ""}`
-    : item.runtime
-    ? `${Math.floor(item.runtime / 60)}h ${item.runtime % 60}m`
-    : "";
-  const type = item.mediaType === "tv" ? "Series" : "Movie";
+  let dur = "";
+  if (item.mediaType === "tv") {
+    dur = item.seasons ? `${item.seasons} season${item.seasons !== 1 ? "s" : ""}` : "Series";
+  } else {
+    dur = item.runtime ? `${Math.floor(item.runtime / 60)}h ${item.runtime % 60}m` : "";
+  }
+  const type = item.mediaType === "tv" ? null : "Movie"; // avoid "Movie · Movie"
   return [item.year, type, dur].filter(Boolean).join(" · ");
 }
 
